@@ -1,9 +1,16 @@
 import processing.serial.*;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.LinkedHashMap;
+
 
 Serial myPort;
 String val;
 char frenoMano; //n Freno Mano 
-
+int wasSentVolante = 0;
  
 import processing.serial.*;
 import java.awt.AWTException;
@@ -20,7 +27,7 @@ int keyInput[] = {
 
 void setup()
 {
-  
+
   String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 9600);
  
@@ -32,16 +39,16 @@ void setup()
   }
     
 }
-
 void draw()
 {
-
   
   if(myPort.available() > 0)
    {
      val = myPort.readStringUntil('\n');
      if(val == null) {
       val = "value is null"; 
+      //print("value is null");
+      //wasSentVolante = 0;
      }
      
      int myTest = val.charAt(0);
@@ -58,6 +65,8 @@ void draw()
        case 107: valueToPrint = 3; // k Encendido Luces
        break;
        case 122: valueToPrint = 4; // z Direccional Izquierda
+       break;
+       case 104: sendDataPOST(); //h means Arduino 1 
        break;
       }
      
@@ -93,4 +102,33 @@ void draw()
          }
        
      }  
+}
+
+void sendDataPOST(){
+  if(wasSentVolante == 0){  
+    print("entrando cambio volante");
+    String POST_PARAMS = "Volante=0";
+    /*
+    try{
+      URL url = new URL("http://192.168.1.69:3000/testing");
+      HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+      httpCon.setDoOutput(true);
+      httpCon.setRequestMethod("POST");
+  
+      httpCon.setDoOutput(true);
+      OutputStream os = httpCon.getOutputStream();
+      os.write(POST_PARAMS.getByte());
+      os.flush();
+      os.close();
+  
+      OutputStreamWriter out = new OutputStreamWriter(
+        httpCon.getOutputStream());
+        System.out.println(httpCon.getResponseCode());
+        System.out.println(httpCon.getResponseMessage());
+        out.close();
+      } catch(IOException e){
+         e.printStackTrace();
+      }*/
+    }
+    wasSentVolante = 1; 
 }
