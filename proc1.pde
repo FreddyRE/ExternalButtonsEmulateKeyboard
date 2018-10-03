@@ -11,6 +11,8 @@ Serial myPort;
 String val;
 char frenoMano; //n Freno Mano 
 int wasSentVolante = 0;
+int volante1 = 0;
+int volante2 = 0;
  
 import processing.serial.*;
 import java.awt.AWTException;
@@ -20,7 +22,7 @@ import java.io.IOException;
 
 
 int keyInput[] = {
-  KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_Z, KeyEvent.VK_X, KeyEvent.VK_L, KeyEvent.VK_H
+  KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K, KeyEvent.VK_Z, KeyEvent.VK_O, KeyEvent.VK_X, KeyEvent.VK_L, KeyEvent.VK_H
 };
 
 
@@ -66,7 +68,9 @@ void draw()
        break;
        case 122: valueToPrint = 4; // z Direccional Izquierda
        break;
-       case 104: sendDataPOST(); //h means Arduino 1 
+       case 111: valueToPrint = 5; // o Limpiaparabrisas
+       break;
+       case 120: valueToPrint = 6; // x direccion Derecha
        break;
       }
      
@@ -105,10 +109,18 @@ void draw()
 }
 
 void sendDataPOST(){
+  
+  String POST_PARAMS = "Volante=0";
+  
   if(wasSentVolante == 0){  
-    print("entrando cambio volante");
-    String POST_PARAMS = "Volante=0";
-    /*
+    
+    if(volante1 == 1){
+        POST_PARAMS = "Volante=1";
+    } else if (volante2 == 1) {
+      POST_PARAMS = "Volante=2";
+    }
+    
+    
     try{
       URL url = new URL("http://192.168.1.69:3000/testing");
       HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
@@ -117,7 +129,7 @@ void sendDataPOST(){
   
       httpCon.setDoOutput(true);
       OutputStream os = httpCon.getOutputStream();
-      os.write(POST_PARAMS.getByte());
+      os.write(POST_PARAMS.getBytes());
       os.flush();
       os.close();
   
@@ -128,7 +140,7 @@ void sendDataPOST(){
         out.close();
       } catch(IOException e){
          e.printStackTrace();
-      }*/
+      }
     }
     wasSentVolante = 1; 
 }
